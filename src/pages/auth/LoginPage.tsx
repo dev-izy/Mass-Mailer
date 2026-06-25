@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { Zap, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Input } from '../../components/ui/Input';
-import Button from '../../components/ui/Button';
+import {Button} from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({

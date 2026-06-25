@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Campaign, DashboardStats } from '../types';
 
+// Dynamically use an env variable if configured, otherwise default to local
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function useDashboardData() {
   const [stats, setStats] = useState<DashboardStats>({
     total_contacts: 0,
@@ -76,17 +79,19 @@ export default function useDashboardData() {
       if (campaignError) throw campaignError;
       if (!campaign) throw new Error('Campaign not found');
 
-      // Get contacts
+      // Get contacts (Only targeting 'active' contacts)
       const { data: contacts, error: contactsError } = await supabase
         .from('contacts')
-        .select('*');
+        .select('*')
+        .eq('status', 'active'); // Good practice: avoid sending to unsubscribed/bounced contacts
 
       if (contactsError) throw contactsError;
-      if (!contacts?.length) throw new Error('No contacts found');
+      if (!contacts?.length) throw new Error('No active contacts found to email');
 
       // Send emails via backend
       for (const contact of contacts) {
-        const response = await fetch('http://localhost:5000/send-email', {
+        // FIX: Replaced hardcoded localhost endpoint with dynamically managed address
+        const response = await fetch(`${API_BASE_URL}/send-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

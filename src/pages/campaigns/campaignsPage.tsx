@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Search, Plus, Filter, Eye } from 'lucide-react';
 import Card from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import StatusBadge from '../../components/ui/StatusBadge';
+import StatusBadge from '../../components/ui/statusBadge';
 import { TableRowSkeleton } from '../../components/ui/Skeleton';
 import { useNavigate } from 'react-router-dom';
 import useCampaigns from '../../hooks/useCampaigns';
@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 export default function CampaignsPage() {
   const navigate = useNavigate();
-  const { campaigns, loading, refetch } = useCampaigns();
+  const { campaigns = [], loading, refetch } = useCampaigns();
   const { sendCampaign } = useDashboardData();
   const [searchTerm, setSearchTerm] = useState('');
   const [sendingId, setSendingId] = useState<string | null>(null);
@@ -47,10 +47,15 @@ export default function CampaignsPage() {
           </div>
         </div>
         <Card className="overflow-hidden">
-          <div className="p-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <TableRowSkeleton key={i} />
-            ))}
+          {/* FIX: Swapped out padding <div> for a proper table skeleton layout */}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <tbody className="divide-y divide-gray-100">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRowSkeleton key={i} />
+                ))}
+              </tbody>
+            </table>
           </div>
         </Card>
       </div>
@@ -101,19 +106,29 @@ export default function CampaignsPage() {
             <tbody className="divide-y divide-gray-100">
               {filteredCampaigns.map((campaign: any) => {
                 const openRate = campaign.sent_count > 0 ? Math.round((campaign.open_count / campaign.sent_count) * 100) : 0;
+                const isCurrentlySending = sendingId === campaign.id;
+
                 return (
                   <tr key={campaign.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <p className="font-medium text-gray-900">{campaign.name}</p>
                       <p className="text-xs text-gray-400">{campaign.subject}</p>
                     </td>
-                    <td className="px-4 py-3"><StatusBadge status={campaign.status} /></td>
+                    <td className="px-4 py-3">
+                      <StatusBadge status={isCurrentlySending ? 'sending' : campaign.status} />
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-600">{campaign.total_recipients}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{campaign.sent_count}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{campaign.sent_count > 0 ? `${openRate}%` : '—'}</td>
                     <td className="px-4 py-3 text-right">
                       {campaign.status === 'draft' && (
-                        <Button size="sm" variant="primary" loading={sendingId === campaign.id} onClick={() => handleSendCampaign(campaign.id)}>
+                        <Button 
+                          size="sm" 
+                          variant="primary" 
+                          loading={isCurrentlySending} 
+                          disabled={isCurrentlySending}
+                          onClick={() => handleSendCampaign(campaign.id)}
+                        >
                           Send
                         </Button>
                       )}

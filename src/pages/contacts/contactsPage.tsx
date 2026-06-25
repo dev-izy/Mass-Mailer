@@ -2,20 +2,22 @@
 import { useState } from 'react';
 import { Search, Plus, Upload, Download, MoreVertical, Mail, Phone, User, Trash2, Edit2 } from 'lucide-react';
 import Card from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
+import { Button } from '../../components/ui/Button';
 import { TableRowSkeleton } from '../../components/ui/Skeleton';
 import ImportModal from './ImportModal'; 
 import useContacts from '../../hooks/useContacts';
 import toast from 'react-hot-toast';
 
 export default function ContactsPage() {
-  const { contacts, loading, deleteContact, refetch } = useContacts();
+  // Added a default empty array fallback to safeguard against undefined hook returns
+  const { contacts = [], loading, deleteContact, refetch } = useContacts();
   const [searchTerm, setSearchTerm] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
 
+  // Added optional chaining (?.) on email just in case bad database entries exist
   const filteredContacts = contacts.filter(
     (c) =>
-      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.company?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -54,6 +56,7 @@ export default function ContactsPage() {
     toast.success('Contacts exported successfully');
   };
 
+  // FIX: Fixed structural hydration bugs by wrapping skeleton rows into an explicit table frame
   if (loading) {
     return (
       <div className="space-y-6">
@@ -64,10 +67,14 @@ export default function ContactsPage() {
           </div>
         </div>
         <Card className="overflow-hidden">
-          <div className="p-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <TableRowSkeleton key={i} cols={5} />
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <tbody className="divide-y divide-gray-100">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <TableRowSkeleton key={i} cols={5} />
+                ))}
+              </tbody>
+            </table>
           </div>
         </Card>
       </div>

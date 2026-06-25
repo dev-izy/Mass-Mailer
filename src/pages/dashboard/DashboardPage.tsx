@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Send, Eye, MousePointer, Plus, ArrowUp, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../../components/ui/Card';
+import Card from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { StatusBadge } from '../../components/ui/StatusBadge';
+import StatusBadge from '../../components/ui/statusBadge';
 import { StatCardSkeleton, TableRowSkeleton } from '../../components/ui/Skeleton';
-import { useDashboardData } from '../../hooks/useDashboardData';
+import useDashboardData from '../../hooks/useDashboardData';
 import toast from 'react-hot-toast';
 
 export default function DashboardPage() {

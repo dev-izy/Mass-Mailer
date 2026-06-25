@@ -6,11 +6,11 @@ import { z } from 'zod';
 import { Send, Save, X, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Card } from '../../components/ui/Card';
+import Card from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input, Textarea, Select } from '../../components/ui/Input';
-import { useCampaigns } from '../../hooks/useCampaigns';
-import { useDashboardData } from '../../hooks/useDashboardData';
+import useCampaigns from '../../hooks/useCampaigns';
+import useDashboardData from '../../hooks/useDashboardData';
 
 const composeSchema = z.object({
   name: z.string().min(1, 'Campaign name is required'),

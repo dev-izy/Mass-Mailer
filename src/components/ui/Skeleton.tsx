@@ -4,6 +4,10 @@ interface SkeletonProps {
   className?: string;
 }
 
+interface TableRowSkeletonProps {
+  cols?: number; // Add this line
+}
+
 export function Skeleton({ className = '' }: SkeletonProps) {
   return <div className={`animate-pulse bg-gray-200 rounded-lg ${className}`} />;
 }
@@ -18,12 +22,12 @@ export function StatCardSkeleton() {
   );
 }
 
-export function TableRowSkeleton() {
+export function TableRowSkeleton({ cols = 5 }: TableRowSkeletonProps) {
   return (
-    <tr>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <td key={i} className="px-4 py-3">
-          <Skeleton className="h-4 w-full" />
+    <tr className="animate-pulse">
+      {Array.from({ length: cols }).map((_, i) => (
+        <td key={i} className="px-4 py-4">
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
         </td>
       ))}
     </tr>

@@ -1,7 +1,7 @@
 // pages/notifications/NotificationsPage.tsx
 import { useState } from 'react';
 import Card from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
+import {Button} from '../../components/ui/Button';
 import { Bell, CheckCircle, AlertCircle, Info, X, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 

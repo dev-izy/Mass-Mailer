@@ -1,11 +1,11 @@
 // pages/contacts/ImportModal.tsx
 import { useState } from 'react';
-import { Modal } from '../../components/ui/Modal';
+import Modal from '../../components/ui/Modal';
 import { Button } from '../../components/ui/Button';
-import { FileUpload } from '../../components/ui/FileUpload';
+import FileUpload from '../../components/ui/FileUpload';
 import { Progress } from '../../components/ui/Progress';
 import { parseFile } from '../../utils/fileParser';
-import { useContacts } from '../../hooks/useContacts';
+import useContacts from '../../hooks/useContacts';
 import toast from 'react-hot-toast';
 import { CheckCircle, AlertCircle, Users, X } from 'lucide-react';
 

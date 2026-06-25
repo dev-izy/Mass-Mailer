@@ -3,13 +3,13 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { AppLayout } from './components/layout/AppLayout';
+import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
-import CampaignsPage from './pages/campaigns/CampaignsPage'; // Now matches
-import ComposePage from './pages/compose/ComposePage'; // Now matches
-import ContactsPage from './pages/contacts/ContactsPage';
+import CampaignsPage from './pages/campaigns/campaignsPage'; // Now matches
+import ComposePage from './pages/compose/composePage'; // Now matches
+import ContactsPage from './pages/contacts/contactsPage';
 import TemplatesPage from './pages/templates/TemplatesPage';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import SettingsPage from './pages/settings/SettingsPage';
