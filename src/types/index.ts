@@ -75,3 +75,15 @@ export interface ImportResult {
   duplicates: number;
   contacts: ContactInput[];
 }
+
+export interface EmailTemplate {
+  id: string;
+  user_id: string;
+  name: string;
+  subject: string;
+  body: string;
+  html_body: string | null;
+  category: string;
+  created_at: string;
+  updated_at: string;
+}

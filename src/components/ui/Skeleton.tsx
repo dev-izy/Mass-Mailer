@@ -1,11 +1,10 @@
 // components/ui/Skeleton.tsx
-import React from 'react';
 
 interface SkeletonProps {
   className?: string;
 }
 
-export default function Skeleton({ className = '' }: SkeletonProps) {
+export function Skeleton({ className = '' }: SkeletonProps) {
   return <div className={`animate-pulse bg-gray-200 rounded-lg ${className}`} />;
 }
 
@@ -19,10 +18,10 @@ export function StatCardSkeleton() {
   );
 }
 
-export function TableRowSkeleton({ cols = 5 }: { cols?: number }) {
+export function TableRowSkeleton() {
   return (
     <tr>
-      {Array.from({ length: cols }).map((_, i) => (
+      {Array.from({ length: 5 }).map((_, i) => (
         <td key={i} className="px-4 py-3">
           <Skeleton className="h-4 w-full" />
         </td>

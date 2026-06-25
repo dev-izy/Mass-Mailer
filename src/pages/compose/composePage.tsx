@@ -6,11 +6,11 @@ import { z } from 'zod';
 import { Send, Save, X, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Card from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
 import { Input, Textarea, Select } from '../../components/ui/Input';
-import useCampaigns from '../../hooks/useCampaigns';
-import useDashboardData from '../../hooks/useDashboardData';
+import { useCampaigns } from '../../hooks/useCampaigns';
+import { useDashboardData } from '../../hooks/useDashboardData';
 
 const composeSchema = z.object({
   name: z.string().min(1, 'Campaign name is required'),
@@ -44,13 +44,12 @@ export default function ComposePage() {
 
   const onSubmit = async (data: ComposeFormData) => {
     setSaving(true);
-
     try {
       await createCampaign({
         name: data.name,
         subject: data.subject,
         body: data.content,
-        // html_body: data.content,
+        html_body: data.content,
         status: 'draft',
         template_id: data.template || null,
         scheduled_at: null,
@@ -61,7 +60,6 @@ export default function ComposePage() {
         click_count: 0,
         bounce_count: 0,
       });
-
       toast.success('Campaign saved successfully');
       navigate('/campaigns');
     } catch (error) {
@@ -73,14 +71,12 @@ export default function ComposePage() {
 
   const handleSendNow = async (data: ComposeFormData) => {
     setSending(true);
-
     try {
-      // Create campaign with 'sending' status
-      const campaign = await createCampaign({
+      const campaign: any = await createCampaign({
         name: data.name,
         subject: data.subject,
         body: data.content,
-        // html_body: data.content,
+        html_body: data.content,
         status: 'sending',
         template_id: data.template || null,
         scheduled_at: null,
@@ -91,11 +87,8 @@ export default function ComposePage() {
         click_count: 0,
         bounce_count: 0,
       });
-
-      // Send the campaign
       await sendCampaign(campaign.id);
       await refetch();
-
       toast.success('Campaign sent successfully!');
       navigate('/campaigns');
     } catch (error) {
@@ -119,74 +112,17 @@ export default function ComposePage() {
         <h1 className="text-2xl font-bold text-gray-900">Compose Campaign</h1>
         <p className="text-sm text-gray-500 mt-1">Create and send your email campaign</p>
       </div>
-
       <Card className="p-6">
         <form className="space-y-6">
-          <Input
-            label="Campaign Name"
-            placeholder="e.g. Weekly Newsletter"
-            error={errors.name?.message}
-            {...register('name')}
-          />
-
-          <Input
-            label="Subject Line"
-            placeholder="Your email subject"
-            error={errors.subject?.message}
-            {...register('subject')}
-          />
-
-          <Select
-            label="Template (Optional)"
-            options={templateOptions}
-            {...register('template')}
-          />
-
-          <Input
-            label="Recipients"
-            placeholder="Enter email addresses or select a list"
-            icon={<Users className="w-4 h-4" />}
-            disabled
-            value="All contacts"
-          />
-
-          <Textarea
-            label="Email Content"
-            placeholder="Write your email content here..."
-            rows={12}
-            error={errors.content?.message}
-            {...register('content')}
-          />
-
+          <Input label="Campaign Name" placeholder="e.g. Weekly Newsletter" error={errors.name?.message} {...register('name')} />
+          <Input label="Subject Line" placeholder="Your email subject" error={errors.subject?.message} {...register('subject')} />
+          <Select label="Template (Optional)" options={templateOptions} {...register('template')} />
+          <Input label="Recipients" placeholder="Enter email addresses or select a list" icon={<Users className="w-4 h-4" />} disabled value="All contacts" />
+          <Textarea label="Email Content" placeholder="Write your email content here..." rows={12} error={errors.content?.message} {...register('content')} />
           <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="secondary"
-              icon={<Save className="w-4 h-4" />}
-              loading={saving}
-              onClick={handleSubmit(onSubmit)}
-            >
-              Save Draft
-            </Button>
-
-            <Button
-              type="button"
-              variant="primary"
-              icon={<Send className="w-4 h-4" />}
-              loading={sending}
-              onClick={handleSubmit(handleSendNow)}
-            >
-              Send Now
-            </Button>
-
-            <Button
-              type="button"
-              variant="ghost"
-              icon={<X className="w-4 h-4" />}
-              onClick={() => navigate('/dashboard')}
-            >
-              Cancel
-            </Button>
+            <Button type="button" variant="secondary" icon={<Save className="w-4 h-4" />} loading={saving} onClick={handleSubmit(onSubmit)}>Save Draft</Button>
+            <Button type="button" variant="primary" icon={<Send className="w-4 h-4" />} loading={sending} onClick={handleSubmit(handleSendNow)}>Send Now</Button>
+            <Button type="button" variant="ghost" icon={<X className="w-4 h-4" />} onClick={() => navigate('/dashboard')}>Cancel</Button>
           </div>
         </form>
       </Card>

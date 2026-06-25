@@ -1,11 +1,11 @@
 // pages/contacts/ImportModal.tsx
-import React, { useState } from 'react';
-import Modal from '../../components/ui/Modal';
-import Button from '../../components/ui/Button';
-import FileUpload from '../../components/ui/FileUpload';
-import Progress from '../../components/ui/Progress';
+import { useState } from 'react';
+import { Modal } from '../../components/ui/Modal';
+import { Button } from '../../components/ui/Button';
+import { FileUpload } from '../../components/ui/FileUpload';
+import { Progress } from '../../components/ui/Progress';
 import { parseFile } from '../../utils/fileParser';
-import useContacts from '../../hooks/useContacts';
+import { useContacts } from '../../hooks/useContacts';
 import toast from 'react-hot-toast';
 import { CheckCircle, AlertCircle, Users, X } from 'lucide-react';
 
@@ -18,14 +18,11 @@ interface ImportModalProps {
 export default function ImportModal({ open, onClose, onSuccess }: ImportModalProps) {
   const { createContact } = useContacts();
   const [step, setStep] = useState<'upload' | 'preview' | 'importing' | 'complete'>('upload');
-  const [file, setFile] = useState<File | null>(null);
   const [importResult, setImportResult] = useState<any>(null);
   const [progress, setProgress] = useState(0);
   const [imported, setImported] = useState(0);
 
   const handleFileSelect = async (selectedFile: File) => {
-    setFile(selectedFile);
-
     try {
       const result = await parseFile(selectedFile);
       setImportResult(result);
@@ -53,7 +50,6 @@ export default function ImportModal({ open, onClose, onSuccess }: ImportModalPro
         console.error('Failed to import contact:', error);
       }
 
-      // Small delay to avoid rate limiting
       if (i % 10 === 0) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -69,7 +65,6 @@ export default function ImportModal({ open, onClose, onSuccess }: ImportModalPro
 
   const reset = () => {
     setStep('upload');
-    setFile(null);
     setImportResult(null);
     setProgress(0);
     setImported(0);
@@ -107,35 +102,22 @@ export default function ImportModal({ open, onClose, onSuccess }: ImportModalPro
               </div>
               <div className="bg-red-50 rounded-lg p-4 text-center">
                 <AlertCircle className="w-5 h-5 text-red-600 mx-auto mb-1" />
-                <p className="text-2xl font-semibold text-red-600">
-                  {importResult.invalid + importResult.duplicates}
-                </p>
+                <p className="text-2xl font-semibold text-red-600">{importResult.invalid + importResult.duplicates}</p>
                 <p className="text-xs text-red-600">Invalid / Duplicates</p>
               </div>
             </div>
 
             {importResult.invalid > 0 && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-700">
-                  ⚠️ {importResult.invalid} invalid emails and {importResult.duplicates} duplicates will be skipped.
-                </p>
+                <p className="text-sm text-yellow-700">⚠️ {importResult.invalid} invalid emails and {importResult.duplicates} duplicates will be skipped.</p>
               </div>
             )}
 
             <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-              <Button
-                variant="secondary"
-                onClick={() => setStep('upload')}
-                icon={<X className="w-4 h-4" />}
-              >
+              <Button variant="secondary" onClick={() => setStep('upload')} icon={<X className="w-4 h-4" />}>
                 Back
               </Button>
-              <Button
-                className="flex-1"
-                onClick={handleImport}
-                disabled={importResult.valid === 0}
-                icon={<Users className="w-4 h-4" />}
-              >
+              <Button className="flex-1" onClick={handleImport} disabled={importResult.valid === 0} icon={<Users className="w-4 h-4" />}>
                 Import {importResult.valid} Contacts
               </Button>
             </div>
@@ -149,11 +131,8 @@ export default function ImportModal({ open, onClose, onSuccess }: ImportModalPro
                 <Users className="w-8 h-8 text-blue-600 animate-pulse" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">Importing Contacts</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Importing {importResult?.contacts.length || 0} contacts
-              </p>
+              <p className="text-sm text-gray-500 mt-1">Importing {importResult?.contacts.length || 0} contacts</p>
             </div>
-
             <Progress value={progress} max={100} label={`${imported} of ${importResult?.contacts.length || 0}`} />
           </div>
         )}
@@ -165,15 +144,10 @@ export default function ImportModal({ open, onClose, onSuccess }: ImportModalPro
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">Import Complete!</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Successfully imported {imported} contacts
-              </p>
+              <p className="text-sm text-gray-500 mt-1">Successfully imported {imported} contacts</p>
             </div>
-
             <div className="flex items-center justify-center">
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
+              <Button variant="secondary" onClick={handleClose}>Close</Button>
             </div>
           </div>
         )}

@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { Search, Plus, Filter, Eye } from 'lucide-react';
 import Card from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
+import { Button } from '../../components/ui/Button';
 import StatusBadge from '../../components/ui/StatusBadge';
-import TableRowSkeleton from '../../components/ui/Skeleton';
+import { TableRowSkeleton } from '../../components/ui/Skeleton';
 import { useNavigate } from 'react-router-dom';
 import useCampaigns from '../../hooks/useCampaigns';
 import useDashboardData from '../../hooks/useDashboardData';
@@ -18,7 +18,7 @@ export default function CampaignsPage() {
   const [sendingId, setSendingId] = useState<string | null>(null);
 
   const filteredCampaigns = campaigns.filter(
-    (c) =>
+    (c: any) =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.subject.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -49,7 +49,7 @@ export default function CampaignsPage() {
         <Card className="overflow-hidden">
           <div className="p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <TableRowSkeleton key={i} cols={5} />
+              <TableRowSkeleton key={i} />
             ))}
           </div>
         </Card>
@@ -59,7 +59,6 @@ export default function CampaignsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Campaigns</h1>
@@ -70,7 +69,6 @@ export default function CampaignsPage() {
         </Button>
       </div>
 
-      {/* Search & Filter */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -87,91 +85,48 @@ export default function CampaignsPage() {
         </Button>
       </div>
 
-      {/* Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Campaign
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Status
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Recipients
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Sent
-                </th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Open Rate
-                </th>
-                <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">
-                  Actions
-                </th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Campaign</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Status</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Recipients</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Sent</th>
+                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Open Rate</th>
+                <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Actions</th>
               </tr>
             </thead>
-
             <tbody className="divide-y divide-gray-100">
-              {filteredCampaigns.map((campaign) => {
-                const openRate =
-                  campaign.sent_count > 0
-                    ? Math.round((campaign.open_count / campaign.sent_count) * 100)
-                    : 0;
-
+              {filteredCampaigns.map((campaign: any) => {
+                const openRate = campaign.sent_count > 0 ? Math.round((campaign.open_count / campaign.sent_count) * 100) : 0;
                 return (
                   <tr key={campaign.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <p className="font-medium text-gray-900">{campaign.name}</p>
                       <p className="text-xs text-gray-400">{campaign.subject}</p>
                     </td>
-
-                    <td className="px-4 py-3">
-                      <StatusBadge status={campaign.status} />
-                    </td>
-
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {campaign.total_recipients}
-                    </td>
-
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {campaign.sent_count}
-                    </td>
-
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {campaign.sent_count > 0 ? `${openRate}%` : '—'}
-                    </td>
-
+                    <td className="px-4 py-3"><StatusBadge status={campaign.status} /></td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{campaign.total_recipients}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{campaign.sent_count}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{campaign.sent_count > 0 ? `${openRate}%` : '—'}</td>
                     <td className="px-4 py-3 text-right">
                       {campaign.status === 'draft' && (
-                        <Button
-                          size="sm"
-                          variant="primary"
-                          loading={sendingId === campaign.id}
-                          onClick={() => handleSendCampaign(campaign.id)}
-                        >
+                        <Button size="sm" variant="primary" loading={sendingId === campaign.id} onClick={() => handleSendCampaign(campaign.id)}>
                           Send
                         </Button>
                       )}
-
                       {campaign.status === 'completed' && (
-                        <Button size="sm" variant="ghost" icon={<Eye className="w-3 h-3" />}>
-                          View
-                        </Button>
+                        <Button size="sm" variant="ghost" icon={<Eye className="w-3 h-3" />}>View</Button>
                       )}
-
                       {campaign.status === 'scheduled' && (
-                        <Button size="sm" variant="secondary">
-                          Edit
-                        </Button>
+                        <Button size="sm" variant="secondary">Edit</Button>
                       )}
                     </td>
                   </tr>
                 );
               })}
-
               {filteredCampaigns.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-gray-500 text-sm">

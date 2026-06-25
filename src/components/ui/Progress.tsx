@@ -1,5 +1,4 @@
 // components/ui/Progress.tsx
-import React from 'react';
 import { motion } from 'framer-motion';
 
 interface ProgressProps {
@@ -10,7 +9,7 @@ interface ProgressProps {
   className?: string;
 }
 
-export default function Progress({
+export function Progress({
   value,
   max = 100,
   label,

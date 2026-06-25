@@ -1,9 +1,8 @@
 // components/ui/Button.tsx
-import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' | 'success';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
@@ -27,7 +26,7 @@ const sizeStyles = {
   lg: 'h-11 px-6 text-sm gap-2',
 };
 
-export default function  Button({
+export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,

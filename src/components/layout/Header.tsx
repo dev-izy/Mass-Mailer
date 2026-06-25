@@ -13,7 +13,7 @@ interface HeaderProps {
   } | null;
 }
 
-export default function Header({ title, subtitle, action }: HeaderProps) {
+export function Header({ title, subtitle, action }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
