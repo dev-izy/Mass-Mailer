@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Campaign, DashboardStats } from '../types';
 
-// Dynamically use an env variable if configured, otherwise default to local
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const EDGE_FUNCTION_URL = import.meta.env.VITE_SUPABASE_EDGE_FUNCTION_URL || 
+  'https://nhxwetdfoclphlubbllt.supabase.co/functions/v1/send-email';
 
 export default function useDashboardData() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -67,10 +67,9 @@ export default function useDashboardData() {
     }
   };
 
-  const sendCampaign = async (campaignId: string) => {
+    const sendCampaign = async (campaignId: string) => {
     try {
       console.log('📧 Starting sendCampaign for ID:', campaignId);
-      console.log('📧 Backend URL:', BACKEND_URL);
       
       // Get campaign details
       const { data: campaign, error: campaignError } = await supabase
@@ -84,71 +83,25 @@ export default function useDashboardData() {
 
       console.log('📧 Campaign found:', campaign.name);
 
-      // Get contacts (Only targeting 'active' contacts)
-      const { data: contacts, error: contactsError } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('status', 'active');
-
-      if (contactsError) throw contactsError;
-      if (!contacts?.length) throw new Error('No active contacts found to email');
-
-      console.log(`📧 Found ${contacts.length} active contacts to send to`);
-
-      // Send emails via backend
-      let successCount = 0;
-      let failCount = 0;
-
-      for (const contact of contacts) {
-        try {
-          // FIXED: Using BACKEND_URL instead of undefined API_BASE_URL
-          const response = await fetch(`${BACKEND_URL}/send-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: contact.email,
-              subject: campaign.subject,
-              html: campaign.body.replace(
-                /{{first_name}}/g,
-                contact.first_name || 'there'
-              ),
-            }),
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`❌ Failed to send to ${contact.email}:`, errorText);
-            failCount++;
-          } else {
-            console.log(`✅ Sent to ${contact.email}`);
-            successCount++;
-          }
-        } catch (error) {
-          console.error(`❌ Error sending to ${contact.email}:`, error);
-          failCount++;
-        }
-
-        // Rate limiting - small delay between emails
-        await new Promise(resolve => setTimeout(resolve, 250));
-      }
-
-      console.log(`📧 Summary: ${successCount} sent, ${failCount} failed`);
-
-      // Update campaign status
-      await supabase
+      // Update campaign status to 'sending' - this triggers the automation
+      const { error: updateError } = await supabase
         .from('campaigns')
-        .update({
-          status: 'completed',
-          sent_count: successCount,
-          sent_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+        .update({ 
+          status: 'sending',
+          updated_at: new Date().toISOString()
         })
         .eq('id', campaignId);
 
-      console.log('✅ Campaign marked as completed!');
-      
-      // Refresh data
-      await fetchData();
+      if (updateError) throw updateError;
+
+      console.log('✅ Campaign is being processed!');
+
+      // Let the database triggers handle the rest
+      // We'll refresh the data after a short delay
+      setTimeout(async () => {
+        await fetchData();
+      }, 2000);
+
     } catch (err) {
       console.error('❌ Error sending campaign:', err);
       throw err;

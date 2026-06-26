@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "process-emails": "node scripts/send-email.js",
+    "process-emails:watch": "node scripts/send-email.js && sleep 5 && npm run process-emails:watch",
+    "start:all": "concurrently \"npm run dev\" \"npm run process-emails:watch\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -18,6 +21,7 @@
     "@types/xlsx": "^0.0.35",
     "cors": "^2.8.6",
     "date-fns": "^4.4.0",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.21.0",
@@ -41,6 +45,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^10.0.3",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
