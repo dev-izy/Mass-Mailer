@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import type { Campaign, DashboardStats } from '../types';
 
 // Dynamically use an env variable if configured, otherwise default to local
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
 export default function useDashboardData() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -69,6 +69,9 @@ export default function useDashboardData() {
 
   const sendCampaign = async (campaignId: string) => {
     try {
+      console.log('📧 Starting sendCampaign for ID:', campaignId);
+      console.log('📧 Backend URL:', BACKEND_URL);
+      
       // Get campaign details
       const { data: campaign, error: campaignError } = await supabase
         .from('campaigns')
@@ -79,54 +82,75 @@ export default function useDashboardData() {
       if (campaignError) throw campaignError;
       if (!campaign) throw new Error('Campaign not found');
 
+      console.log('📧 Campaign found:', campaign.name);
+
       // Get contacts (Only targeting 'active' contacts)
       const { data: contacts, error: contactsError } = await supabase
         .from('contacts')
         .select('*')
-        .eq('status', 'active'); // Good practice: avoid sending to unsubscribed/bounced contacts
+        .eq('status', 'active');
 
       if (contactsError) throw contactsError;
       if (!contacts?.length) throw new Error('No active contacts found to email');
 
-      // Send emails via backend
-      for (const contact of contacts) {
-        // FIX: Replaced hardcoded localhost endpoint with dynamically managed address
-        const response = await fetch(`${API_BASE_URL}/send-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: contact.email,
-            subject: campaign.subject,
-            html: campaign.body.replace(
-              /{{first_name}}/g,
-              contact.first_name || 'there'
-            ),
-          }),
-        });
+      console.log(`📧 Found ${contacts.length} active contacts to send to`);
 
-        if (!response.ok) {
-          console.error(`Failed to send to ${contact.email}`);
+      // Send emails via backend
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const contact of contacts) {
+        try {
+          // FIXED: Using BACKEND_URL instead of undefined API_BASE_URL
+          const response = await fetch(`${BACKEND_URL}/send-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: contact.email,
+              subject: campaign.subject,
+              html: campaign.body.replace(
+                /{{first_name}}/g,
+                contact.first_name || 'there'
+              ),
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`❌ Failed to send to ${contact.email}:`, errorText);
+            failCount++;
+          } else {
+            console.log(`✅ Sent to ${contact.email}`);
+            successCount++;
+          }
+        } catch (error) {
+          console.error(`❌ Error sending to ${contact.email}:`, error);
+          failCount++;
         }
 
-        // Rate limiting
+        // Rate limiting - small delay between emails
         await new Promise(resolve => setTimeout(resolve, 250));
       }
+
+      console.log(`📧 Summary: ${successCount} sent, ${failCount} failed`);
 
       // Update campaign status
       await supabase
         .from('campaigns')
         .update({
           status: 'completed',
-          sent_count: contacts.length,
+          sent_count: successCount,
           sent_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
         .eq('id', campaignId);
 
+      console.log('✅ Campaign marked as completed!');
+      
       // Refresh data
       await fetchData();
     } catch (err) {
-      console.error('Error sending campaign:', err);
+      console.error('❌ Error sending campaign:', err);
       throw err;
     }
   };

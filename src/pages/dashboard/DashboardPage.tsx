@@ -34,20 +34,28 @@ export default function DashboardPage() {
     { icon: <MousePointer className="w-5 h-5 text-white" />, label: 'Click Rate', value: `${stats.click_rate}%`, change: -1.2, color: 'bg-orange-600' },
   ];
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)}
-        </div>
-        <Card className="overflow-hidden">
-          <div className="p-4">
-            {Array.from({ length: 5 }).map((_, i) => <TableRowSkeleton key={i} />)}
-          </div>
-        </Card>
+ if (loading) {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <StatCardSkeleton key={i} />
+        ))}
       </div>
-    );
-  }
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <tbody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <TableRowSkeleton key={i} cols={5} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
 
   return (
     <div className="space-y-6">

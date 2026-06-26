@@ -4,10 +4,6 @@ interface SkeletonProps {
   className?: string;
 }
 
-interface TableRowSkeletonProps {
-  cols?: number; // Add this line
-}
-
 export function Skeleton({ className = '' }: SkeletonProps) {
   return <div className={`animate-pulse bg-gray-200 rounded-lg ${className}`} />;
 }
@@ -22,12 +18,13 @@ export function StatCardSkeleton() {
   );
 }
 
-export function TableRowSkeleton({ cols = 5 }: TableRowSkeletonProps) {
+// Fixed: This should only render the <tr> without wrapping <div>
+export function TableRowSkeleton({ cols = 5 }: { cols?: number }) {
   return (
     <tr className="animate-pulse">
       {Array.from({ length: cols }).map((_, i) => (
-        <td key={i} className="px-4 py-4">
-          <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <td key={i} className="px-4 py-3">
+          <div className="h-4 bg-gray-200 rounded-lg w-full"></div>
         </td>
       ))}
     </tr>
