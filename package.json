@@ -7,6 +7,6 @@
     "process-emails": "node scripts/send-email.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   }
 }
