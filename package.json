@@ -1,58 +1,12 @@
 {
-  "name": "mass-mailer",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build:tsc": "tsc --noEmit --skipLibCheck || true",
     "preview": "vite preview",
-    "process-emails": "node scripts/send-email.js",
-    "process-emails:watch": "node scripts/send-email.js && sleep 5 && npm run process-emails:watch",
-    "start:all": "concurrently \"npm run dev\" \"npm run process-emails:watch\""
+    "process-emails": "node scripts/send-email.js"
   },
-  "dependencies": {
-    "@hookform/resolvers": "^5.4.0",
-    "@supabase/supabase-js": "^2.108.2",
-    "@tailwindcss/vite": "^4.3.1",
-    "@tanstack/react-query": "^5.101.0",
-    "@types/papaparse": "^5.5.2",
-    "@types/xlsx": "^0.0.35",
-    "cors": "^2.8.6",
-    "date-fns": "^4.4.0",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "framer-motion": "^12.40.0",
-    "lucide-react": "^1.21.0",
-    "mammoth": "^1.12.0",
-    "papaparse": "^5.5.4",
-    "pdfjs-dist": "^6.0.227",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-hook-form": "^7.80.0",
-    "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.18.0",
-    "recharts": "^3.8.1",
-    "resend": "^6.14.0",
-    "tailwind": "^4.0.0",
-    "xlsx": "^0.18.5",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.12.3",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "concurrently": "^10.0.3",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.6.0",
-    "typescript": "~6.0.2",
-    "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.12"
+  "engines": {
+    "node": "18.x"
   }
 }

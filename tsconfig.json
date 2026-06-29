@@ -1,4 +1,4 @@
-// tsconfig.json
+// tsconfig.json - Simplified version without references
 {
   "compilerOptions": {
     "target": "ES2020",
