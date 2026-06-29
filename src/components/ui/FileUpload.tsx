@@ -10,7 +10,7 @@ interface FileUploadProps {
   label?: string;
 }
 
-export default function FileUpload({
+export function FileUpload({
   onFileSelect,
   accept = '.csv,.xlsx,.xls,.txt,.json',
   maxSize = 10,

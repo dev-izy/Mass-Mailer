@@ -1,13 +1,12 @@
-// pages/dashboard/DashboardPage.tsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Send, Eye, MousePointer, Plus, ArrowUp, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Card from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import StatusBadge from '../../components/ui/statusBadge';
+import { Card } from '../../components/ui/Card'; // Named import
+import { Button } from '../../components/ui/Button'; // Named import
+import { StatusBadge } from '../../components/ui/statusBadge'; // Named import
 import { StatCardSkeleton, TableRowSkeleton } from '../../components/ui/Skeleton';
-import useDashboardData from '../../hooks/useDashboardData';
+import { useDashboardData } from '../../hooks/useDashboardData'; // Named import
 import toast from 'react-hot-toast';
 
 export default function DashboardPage() {

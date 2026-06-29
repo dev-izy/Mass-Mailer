@@ -1,10 +1,9 @@
 // hooks/useContacts.ts
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import type { Contact, ContactInput } from '../types';
 
-export default function useContacts() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+export function useContacts() { // This is a named export
+  const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +33,7 @@ export default function useContacts() {
     }
   };
 
-  const createContact = async (contactData: ContactInput) => {
+  const createContact = async (contactData: any) => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error('User not authenticated');
@@ -60,7 +59,7 @@ export default function useContacts() {
     }
   };
 
-  const updateContact = async (id: string, updates: Partial<Contact>) => {
+  const updateContact = async (id: string, updates: any) => {
     try {
       const { data, error: updateError } = await supabase
         .from('contacts')
@@ -96,7 +95,7 @@ export default function useContacts() {
     }
   };
 
-  const bulkCreateContacts = async (contactsData: ContactInput[]) => {
+  const bulkCreateContacts = async (contactsData: any[]) => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error('User not authenticated');

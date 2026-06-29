@@ -1,14 +1,14 @@
-// pages/campaigns/CampaignsPage.tsx
 import { useState } from 'react';
 import { Search, Plus, Filter, Eye } from 'lucide-react';
-import Card from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import StatusBadge from '../../components/ui/statusBadge';
+import { Card } from '../../components/ui/Card'; // Named import
+import { Button } from '../../components/ui/Button'; // Named import
+import { StatusBadge } from '../../components/ui/statusBadge'; // Named import
 import { TableRowSkeleton } from '../../components/ui/Skeleton';
 import { useNavigate } from 'react-router-dom';
-import useCampaigns from '../../hooks/useCampaigns';
-import useDashboardData from '../../hooks/useDashboardData';
+import { useCampaigns } from '../../hooks/useCampaigns'; // Named import
+import { useDashboardData } from '../../hooks/useDashboardData'; // Named import
 import toast from 'react-hot-toast';
+
 
 export default function CampaignsPage() {
   const navigate = useNavigate();

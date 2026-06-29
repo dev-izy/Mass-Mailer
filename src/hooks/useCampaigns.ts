@@ -1,10 +1,9 @@
 // hooks/useCampaigns.ts
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import type { Campaign } from '../types';
 
-export default function useCampaigns() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+export function useCampaigns() { // This is a named export
+  const [campaigns, setCampaigns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +27,7 @@ export default function useCampaigns() {
     }
   };
 
-  const createCampaign = async (campaignData: Omit<Campaign, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+  const createCampaign = async (campaignData: any) => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error('User not authenticated');
@@ -51,7 +50,7 @@ export default function useCampaigns() {
     }
   };
 
-  const updateCampaign = async (id: string, updates: Partial<Campaign>) => {
+  const updateCampaign = async (id: string, updates: any) => {
     try {
       const { data, error: updateError } = await supabase
         .from('campaigns')

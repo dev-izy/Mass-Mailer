@@ -1,4 +1,4 @@
-// types/index.ts
+// src/types/index.ts
 export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'completed' | 'failed' | 'paused';
 export type ContactStatus = 'active' | 'unsubscribed' | 'bounced';
 

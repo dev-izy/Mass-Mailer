@@ -1,8 +1,7 @@
-// pages/analytics/AnalyticsPage.tsx
 import { useState } from 'react';
-import Card from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import StatusBadge from '../../components/ui/statusBadge';
+import { Card } from '../../components/ui/Card'; // Named import
+import { Button } from '../../components/ui/Button'; // Named import
+import { StatusBadge } from '../../components/ui/statusBadge'; // Named import (capital S)
 import {
   BarChart3,
   Users,

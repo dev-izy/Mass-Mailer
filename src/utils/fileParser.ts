@@ -1,7 +1,7 @@
 // utils/fileParser.ts
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import type { ContactInput, ImportResult } from '../types';
+// Remove: import type { ContactInput, ImportResult } from '../types';
 
 const EMAIL_REGEX = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
 
@@ -13,7 +13,7 @@ function extractEmailsFromText(text: string): string[] {
   return [...new Set((text.match(EMAIL_REGEX) || []).map(e => e.toLowerCase()))];
 }
 
-function buildContact(email: string, row?: Record<string, string>): ContactInput {
+function buildContact(email: string, row?: Record<string, string>): any {
   const firstName = row?.['first_name'] || row?.['firstname'] || row?.['first name'] || '';
   const lastName = row?.['last_name'] || row?.['lastname'] || row?.['last name'] || '';
 
@@ -24,12 +24,12 @@ function buildContact(email: string, row?: Record<string, string>): ContactInput
     company: row?.['company'] || row?.['organization'] || '',
     phone: row?.['phone'] || row?.['phone_number'] || '',
     tags: [],
-    status: 'active',
+    status: 'active' as const,
     custom_fields: {},
   };
 }
 
-export async function parseFile(file: File): Promise<ImportResult> {
+export async function parseFile(file: File): Promise<any> {
   const ext = file.name.split('.').pop()?.toLowerCase();
 
   if (ext === 'csv') return parseCSV(file);
@@ -40,7 +40,7 @@ export async function parseFile(file: File): Promise<ImportResult> {
   throw new Error(`Unsupported file type: .${ext}`);
 }
 
-async function parseCSV(file: File): Promise<ImportResult> {
+async function parseCSV(file: File): Promise<any> {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
       header: true,
@@ -48,22 +48,15 @@ async function parseCSV(file: File): Promise<ImportResult> {
       transformHeader: (h) => h.toLowerCase().trim(),
       complete: (results) => {
         const seen = new Set<string>();
-        let invalid = 0,
-          duplicates = 0;
-        const contacts: ContactInput[] = [];
+        let invalid = 0, duplicates = 0;
+        const contacts: any[] = [];
 
         for (const row of results.data as Record<string, string>[]) {
           const emailKey = Object.keys(row).find(k => k.includes('email'));
           const email = (emailKey ? row[emailKey] : '').toLowerCase().trim();
 
-          if (!isValidEmail(email)) {
-            invalid++;
-            continue;
-          }
-          if (seen.has(email)) {
-            duplicates++;
-            continue;
-          }
+          if (!isValidEmail(email)) { invalid++; continue; }
+          if (seen.has(email)) { duplicates++; continue; }
           seen.add(email);
           contacts.push(buildContact(email, row));
         }
@@ -81,18 +74,15 @@ async function parseCSV(file: File): Promise<ImportResult> {
   });
 }
 
-async function parseTXT(file: File): Promise<ImportResult> {
+async function parseTXT(file: File): Promise<any> {
   const text = await file.text();
   const emails = extractEmailsFromText(text);
   const seen = new Set<string>();
   let duplicates = 0;
-  const contacts: ContactInput[] = [];
+  const contacts: any[] = [];
 
   for (const email of emails) {
-    if (seen.has(email)) {
-      duplicates++;
-      continue;
-    }
+    if (seen.has(email)) { duplicates++; continue; }
     seen.add(email);
     contacts.push(buildContact(email));
   }
@@ -106,7 +96,7 @@ async function parseTXT(file: File): Promise<ImportResult> {
   };
 }
 
-async function parseExcel(file: File): Promise<ImportResult> {
+async function parseExcel(file: File): Promise<any> {
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: 'array' });
   const ws = wb.Sheets[wb.SheetNames[0]];
@@ -117,22 +107,15 @@ async function parseExcel(file: File): Promise<ImportResult> {
   );
 
   const seen = new Set<string>();
-  let invalid = 0,
-    duplicates = 0;
-  const contacts: ContactInput[] = [];
+  let invalid = 0, duplicates = 0;
+  const contacts: any[] = [];
 
   for (const row of normalizedRows) {
     const emailKey = Object.keys(row).find(k => k.includes('email'));
     const email = (emailKey ? row[emailKey] : '').toLowerCase().trim();
 
-    if (!isValidEmail(email)) {
-      invalid++;
-      continue;
-    }
-    if (seen.has(email)) {
-      duplicates++;
-      continue;
-    }
+    if (!isValidEmail(email)) { invalid++; continue; }
+    if (seen.has(email)) { duplicates++; continue; }
     seen.add(email);
     contacts.push(buildContact(email, row));
   }
@@ -146,25 +129,18 @@ async function parseExcel(file: File): Promise<ImportResult> {
   };
 }
 
-async function parseJSON(file: File): Promise<ImportResult> {
+async function parseJSON(file: File): Promise<any> {
   const text = await file.text();
   const data = JSON.parse(text);
   const rows = Array.isArray(data) ? data : [data];
   const seen = new Set<string>();
-  let invalid = 0,
-    duplicates = 0;
-  const contacts: ContactInput[] = [];
+  let invalid = 0, duplicates = 0;
+  const contacts: any[] = [];
 
   for (const row of rows) {
     const email = (row.email || '').toLowerCase().trim();
-    if (!isValidEmail(email)) {
-      invalid++;
-      continue;
-    }
-    if (seen.has(email)) {
-      duplicates++;
-      continue;
-    }
+    if (!isValidEmail(email)) { invalid++; continue; }
+    if (seen.has(email)) { duplicates++; continue; }
     seen.add(email);
     contacts.push(buildContact(email, row));
   }

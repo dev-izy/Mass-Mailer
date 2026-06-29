@@ -1,8 +1,7 @@
-// pages/templates/TemplatesPage.tsx
 import { useState } from 'react';
 import { Search, Plus, FileText, Trash2, Copy, MoreVertical, Star } from 'lucide-react';
-import Card from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card'; // Named import
+import { Button } from '../../components/ui/Button'; // Named import
 import toast from 'react-hot-toast';
 
 interface Template {

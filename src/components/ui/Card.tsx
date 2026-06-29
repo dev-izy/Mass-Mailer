@@ -17,13 +17,7 @@ const paddingStyles = {
   lg: 'p-8',
 };
 
-export default function Card({
-  children,
-  className = '',
-  hover = false,
-  padding = 'md',
-  onClick,
-}: CardProps) {
+export function Card({ children, className = '', hover = false, padding = 'md', onClick }: CardProps) {
   return (
     <motion.div
       whileHover={hover ? { y: -2, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' } : undefined}

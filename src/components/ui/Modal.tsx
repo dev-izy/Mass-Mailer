@@ -18,7 +18,7 @@ const sizeStyles = {
   xl: 'max-w-4xl',
 };
 
-export default function Modal({ open, onClose, title, children, size = 'md' }: ModalProps) {
+export function Modal({ open, onClose, title, children, size = 'md' }: ModalProps) {
   return (
     <AnimatePresence>
       {open && (

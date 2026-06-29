@@ -1,11 +1,11 @@
 // pages/contacts/ContactsPage.tsx
 import { useState } from 'react';
 import { Search, Plus, Upload, Download, MoreVertical, Mail, Phone, User, Trash2, Edit2 } from 'lucide-react';
-import Card from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card'; // Named import
+import { Button } from '../../components/ui/Button'; // Named import
 import { TableRowSkeleton } from '../../components/ui/Skeleton';
-import ImportModal from './ImportModal'; 
-import useContacts from '../../hooks/useContacts';
+import ImportModal from './ImportModal';
+import { useContacts } from '../../hooks/useContacts'; // Named import
 import toast from 'react-hot-toast';
 
 export default function ContactsPage() {
