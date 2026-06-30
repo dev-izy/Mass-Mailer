@@ -1,12 +1,50 @@
 {
+  "name": "mass-mailer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:tsc": "tsc --noEmit --skipLibCheck || true",
+    "build:check": "tsc --noEmit --skipLibCheck",
     "preview": "vite preview",
-    "process-emails": "node scripts/send-email.js"
+    "process-emails": "node scripts/send-email.js",
+    "process-emails:watch": "node scripts/send-email.js && sleep 5 && npm run process-emails:watch",
+    "start:all": "concurrently \"npm run dev\" \"npm run process-emails:watch\""
   },
-  "engines": {
-    "node": "20.x"
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
+    "@supabase/supabase-js": "^2.39.0",
+    "@types/papaparse": "^5.3.14",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.292.0",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.47.0",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.18.0",
+    "resend": "^3.0.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^4.1.0",
+    "autoprefixer": "^10.5.2",
+    "postcss": "^8.5.16",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
   }
 }
